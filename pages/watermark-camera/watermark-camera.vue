@@ -20,8 +20,8 @@
 			</view>
 		</view>
 		<view class="middle-camera-review">
-			<camera class="watermark-camera" :device-position="isBack ? 'back' : 'front'" 
-				:flash="lightingSettingValue" @error="error"></camera>
+			<camera v-if="showCamera" class="watermark-camera" :device-position="isBack ? 'back' : 'front'" 
+				:flash="lightingSettingValue" @initdone="initdone" @error="error"></camera>
 		</view>
 		<view class="bottom-tools-bar">
 			<view class="tools-content">
@@ -60,12 +60,13 @@
 
 <script>
 	export default {
-		onLoad(){
-			console.log("水印相机页面已打开")
-		},
 		data() {
 			return {
+				// 相机API实例
+				cameraContext: null,
+				
 				// 用于界面UI变动
+				showCamera: false,
 				isClick: false,
 				isReversing: false,
 				isShowLighting: false,
@@ -75,11 +76,25 @@
 				
 				// 是否启用后置摄像头
 				isBack: true,
+				
 				// 存储设置的闪光灯设置
 				lightingSettingValue: "auto"
 			}
 		},
 		methods: {
+			onLoad() {
+				setTimeout(() => {this.showCamera = true}, 200)
+			},
+			initdone() {
+				console.log("相机初始化完成！！！")
+				const cameraContext = uni.createCameraContext()
+				if (!cameraContext) {
+					this.error()
+					return;
+				}
+				console.log("获取到相机实例：", cameraContext)
+				this.cameraContext = cameraContext
+			},
 			error() {
 				console.error("相机加载失败！！！")
 				// uni.showModal({
@@ -98,6 +113,9 @@
 				
 				// 防止多次快速点击
 				if (!this.takePhotoTimer) {
+					
+					// 开始拍摄照片
+					
 					this.takePhotoTimer = setTimeout(() => {
 						this.isClick = false
 						this.takePhotoTimer = null
@@ -198,7 +216,7 @@
 	.middle-camera-review{
 		width: 750rpx;
 		height: calc(100vh - 400rpx);
-		// background-color: pink;
+		background-color: #000;
 		
 		.watermark-camera {
 			width: 100%;
