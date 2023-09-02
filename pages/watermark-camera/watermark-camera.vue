@@ -10,7 +10,7 @@
 				<view class="icon">
 					<image class="timer" src="../../static/watermark-camera/top-tool-var/icon-timer.svg" mode=""></image>
 				</view>
-				<view class="icon">
+				<view class="icon" @click="handleLighting">
 					<image class="lighting" src="../../static/watermark-camera/top-tool-var/icon-lighting.svg"></image>
 				</view>
 				<view class="icon" @click="handleReverse">
@@ -21,7 +21,7 @@
 		</view>
 		<view class="middle-camera-review">
 			<camera class="watermark-camera" :device-position="isBack ? 'back' : 'front'" 
-				flash="off" @error="error"></camera>
+				:flash="lightingSettingValue" @error="error"></camera>
 		</view>
 		<view class="bottom-tools-bar">
 			<view class="tools-content">
@@ -47,6 +47,14 @@
 				</view>
 			</view>
 		</view>
+		<view class="lighting-select-modal" :class="{show: isShowLighting}">
+			<view class="items-bar" @click="changeLightingSetting">
+				<view data-index="0" data-lightmode="auto" class="select-item" :class="{'select-it': lightingSettingIndex === '0'}">自动</view>
+				<view data-index="1" data-lightmode="torch" class="select-item" :class="{'select-it': lightingSettingIndex === '1'}">常亮</view>
+				<view data-index="2" data-lightmode="on" class="select-item" :class="{'select-it': lightingSettingIndex === '2'}">开启</view>
+				<view data-index="3" data-lightmode="off" class="select-item" :class="{'select-it': lightingSettingIndex === '3'}">关闭</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -60,25 +68,29 @@
 				// 用于界面UI变动
 				isClick: false,
 				isReversing: false,
+				isShowLighting: false,
+				lightingSettingIndex: '0',
 				takePhotoTimer: null,
 				reverseTimer: null,
 				
 				// 是否启用后置摄像头
 				isBack: true,
+				// 存储设置的闪光灯设置
+				lightingSettingValue: "auto"
 			}
 		},
 		methods: {
 			error() {
 				console.error("相机加载失败！！！")
-				uni.showModal({
-					title: "注意",
-					content:"当前设备暂不支持相机！！！",
-					showCancel: false,
-					confirmColor: "#dd524d",
-					success: () => {
-						uni.navigateBack()
-					}
-				})
+				// uni.showModal({
+				// 	title: "注意",
+				// 	content:"当前设备暂不支持相机！！！",
+				// 	showCancel: false,
+				// 	confirmColor: "#dd524d",
+				// 	success: () => {
+				// 		uni.navigateBack()
+				// 	}
+				// })
 			},
 			takePhoto() {
 				// 启用UI变换
@@ -104,6 +116,21 @@
 						this.reverseTimer = null
 					},2000)
 				}
+			},
+			handleLighting() {
+				// 开启/关闭 选择窗
+				this.isShowLighting = !this.isShowLighting
+			},
+			changeLightingSetting(e) {
+				const lightingIndex = e.target.dataset.index
+				const lightingValue = e.target.dataset.lightmode
+				
+				if (lightingIndex) {
+					this.lightingSettingIndex = lightingIndex
+				}
+				if (lightingValue) {
+					this.lightingSettingValue = lightingValue
+				}
 			}
 		}
 	}
@@ -122,6 +149,9 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
+		
+		position: relative;
+		z-index: 10;
 		
 		.left {
 			width: 100rpx;
@@ -245,6 +275,57 @@
 					color: #ffffff;
 					font-size: 24rpx;
 					margin-top: 10rpx;
+				}
+			}
+		}
+	}
+	.lighting-select-modal {
+		width: 710rpx;
+		height: 100rpx;
+		padding: 0 20rpx;
+		background-color: rgba(0, 0, 0, 0.7);
+		border-bottom-left-radius: 10rpx;
+		border-bottom-right-radius: 10rpx;
+		position: fixed;
+		top: -110rpx;
+		left: 0;
+		
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		
+		transition: all 0.3s;
+		z-index: 9;
+		
+		&.show {
+			top: 100rpx;
+			left: 0;
+		}
+		
+		.items-bar {
+			width: 100%;
+			height: 50rpx;
+			color: #fff;
+			border-radius: 10rpx;
+			overflow: hidden;
+			background-color: #000;
+			
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			
+			.select-item {
+				flex: 1;
+				height: 50rpx;
+				line-height: 50rpx;
+				text-align: center;
+				font-size: 24rpx;
+				transition: all 0.3s;
+				
+				&.select-it {
+					background-color: darkorange;
 				}
 			}
 		}
