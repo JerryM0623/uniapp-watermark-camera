@@ -70,6 +70,15 @@
 		methods: {
 			error() {
 				console.error("相机加载失败！！！")
+				uni.showModal({
+					title: "注意",
+					content:"当前设备暂不支持相机！！！",
+					showCancel: false,
+					confirmColor: "#dd524d",
+					success: () => {
+						uni.navigateBack()
+					}
+				})
 			},
 			takePhoto() {
 				// 启用UI变换
