@@ -29,7 +29,7 @@
 					<view class="icon thumbnail"></view>
 					<view class="text">相册</view>
 				</view>
-				<view class="tool photo-location">
+				<view class="tool photo-location" @click="getLocation">
 					<image class="icon location" src="../../static/watermark-camera/bottom-tool-bar/icon-location.svg"></image>
 					<view class="text">地址</view>
 				</view>
@@ -221,6 +221,20 @@
 				if (timerValue) {
 					this.timerSettingValue = timerValue
 				}
+			},
+			getLocation() {
+				uni.getLocation({
+					type: 'wgs84',
+					altitude: false,
+					isHighAccuracy: true,
+					success: (res) => {
+						console.log('当前位置的经度：' + res.longitude);
+						console.log('当前位置的纬度：' + res.latitude);
+					},
+					fail: (error) => {
+						console.error("定位获取失败", error.errMsg)
+					}
+				})
 			}
 		}
 	}
