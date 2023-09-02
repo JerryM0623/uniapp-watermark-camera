@@ -63,6 +63,15 @@
 				<view data-index="3" data-timermode="10" class="select-item" :class="{'select-it': timerSettingIndex === '3'}">10S</view>
 			</view>
 		</view>
+		<view class="photo-watermark-area">
+			<view class="content">
+				<view class="item time">时间：2023.09.03 00:07</view>
+				<view class="item location">地点：浙江省 宁波市 南部商务区</view>
+				<view class="item longitude">精度：121.115634E</view>
+				<view class="item latitude">维度：33.886572N</view>
+				<view class="item weather">天气：晴 31℃</view>
+			</view>
+		</view>
 		<view v-show="isShowTakePhotoMask" class="take-photo-mask"></view>
 	</view>
 </template>
@@ -118,15 +127,15 @@
 			},
 			error() {
 				console.error("相机加载失败！！！")
-				// uni.showModal({
-				// 	title: "注意",
-				// 	content:"当前设备暂不支持相机！！！",
-				// 	showCancel: false,
-				// 	confirmColor: "#dd524d",
-				// 	success: () => {
-				// 		uni.navigateBack()
-				// 	}
-				// })
+				uni.showModal({
+					title: "注意",
+					content:"当前设备暂不支持相机！！！",
+					showCancel: false,
+					confirmColor: "#dd524d",
+					success: () => {
+						uni.navigateBack()
+					}
+				})
 			},
 			takePhoto() {
 				// 启用UI变换
@@ -384,14 +393,13 @@
 		}
 	}
 	.lighting-select-modal {
-		width: 710rpx;
+		box-sizing: border-box;
+		width: 750rpx;
 		height: 100rpx;
 		padding: 0 20rpx;
 		background-color: rgba(0, 0, 0, 0.8);
-		border-bottom-left-radius: 10rpx;
-		border-bottom-right-radius: 10rpx;
 		position: fixed;
-		top: -110rpx;
+		top: -100rpx;
 		left: 0;
 		
 		display: flex;
@@ -435,14 +443,13 @@
 		}
 	}
 	.timer-select-modal {
-		width: 710rpx;
+		box-sizing: border-box;
+		width: 750rpx;
 		height: 100rpx;
 		padding: 0 20rpx;
 		background-color: rgba(0, 0, 0, 0.8);
-		border-bottom-left-radius: 10rpx;
-		border-bottom-right-radius: 10rpx;
 		position: fixed;
-		top: -110rpx;
+		top: -100rpx;
 		left: 0;
 		
 		display: flex;
@@ -484,6 +491,16 @@
 				}
 			}
 		}
+	}
+	.photo-watermark-area {
+		padding: 20rpx;
+		background-color: rgba(255, 255, 255, 0.5);
+		border: 10rpx solid #ffffff;
+		position: fixed;
+		left: 20rpx;
+		bottom: 320rpx;
+		color: #000000;
+		font-weight: 700;
 	}
 	.take-photo-mask {
 		width: 100vw;
