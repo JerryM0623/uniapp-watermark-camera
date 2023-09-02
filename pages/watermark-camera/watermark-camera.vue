@@ -89,7 +89,15 @@
 				console.log("相机初始化完成！！！")
 				const cameraContext = uni.createCameraContext()
 				if (!cameraContext) {
-					this.error()
+					uni.showModal({
+						title: "注意",
+						content:"相机初始化失败，请退出重试！！！",
+						showCancel: false,
+						confirmColor: "#dd524d",
+						success: () => {
+							uni.navigateBack()
+						}
+					})
 					return;
 				}
 				console.log("获取到相机实例：", cameraContext)
