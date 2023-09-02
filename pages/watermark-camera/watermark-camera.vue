@@ -63,7 +63,7 @@
 				<view data-index="3" data-timermode="10" class="select-item" :class="{'select-it': timerSettingIndex === '3'}">10S</view>
 			</view>
 		</view>
-		<view v-show="isClick" class="take-photo-mask"></view>
+		<view v-show="isShowTakePhotoMask" class="take-photo-mask"></view>
 	</view>
 </template>
 
@@ -82,6 +82,7 @@
 				lightingSettingIndex: '0',
 				isShowTimer: false,
 				timerSettingIndex: '0',
+				isShowTakePhotoMask: false,
 				takePhotoTimer: null,
 				reverseTimer: null,
 				
@@ -136,15 +137,37 @@
 					
 					// 开始拍摄照片
 					if (this.cameraContext) {
-						this.cameraContext.takePhoto({
-							quality: 'normal',
-							success: (res) => {
-								const { tempImagePath } = res
-								if (tempImagePath) {
-									console.log("拍照结束，图片路径为：", tempImagePath)
+						if (this.timerSettingValue !== 'off') {
+							setTimeout(() => {
+								this.isShowTakePhotoMask = true
+								this.cameraContext.takePhoto({
+									quality: 'normal',
+									success: (res) => {
+										const { tempImagePath } = res
+										if (tempImagePath) {
+											console.log("拍照结束，图片路径为：", tempImagePath)
+										}
+									},
+									complete: () => {
+										this.isShowTakePhotoMask = false
+									}
+								})
+							}, Number(this.timerSettingValue) * 1000)
+						} else {
+							this.isShowTakePhotoMask = true
+							this.cameraContext.takePhoto({
+								quality: 'normal',
+								success: (res) => {
+									const { tempImagePath } = res
+									if (tempImagePath) {
+										console.log("拍照结束，图片路径为：", tempImagePath)
+									}
+								},
+								complete: () => {
+									this.isShowTakePhotoMask = false
 								}
-							}
-						})
+							})
+						}
 					}
 					
 					this.takePhotoTimer = setTimeout(() => {
