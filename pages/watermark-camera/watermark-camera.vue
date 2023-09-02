@@ -7,7 +7,7 @@
 				</view>
 			</view>
 			<view class="right">
-				<view class="icon">
+				<view class="icon" @click="handleTimer">
 					<image class="timer" src="../../static/watermark-camera/top-tool-var/icon-timer.svg" mode=""></image>
 				</view>
 				<view class="icon" @click="handleLighting">
@@ -55,6 +55,14 @@
 				<view data-index="3" data-lightmode="off" class="select-item" :class="{'select-it': lightingSettingIndex === '3'}">关闭</view>
 			</view>
 		</view>
+		<view class="timer-select-modal" :class="{show: isShowTimer}">
+			<view class="items-bar" @click="changeTimerSetting">
+				<view data-index="0" data-timermode="off" class="select-item" :class="{'select-it': timerSettingIndex === '0'}">关闭</view>
+				<view data-index="1" data-timermode="3" class="select-item" :class="{'select-it': timerSettingIndex === '1'}">3S</view>
+				<view data-index="2" data-timermode="5" class="select-item" :class="{'select-it': timerSettingIndex === '2'}">5S</view>
+				<view data-index="3" data-timermode="10" class="select-item" :class="{'select-it': timerSettingIndex === '3'}">10S</view>
+			</view>
+		</view>
 		<view v-show="isClick" class="take-photo-mask"></view>
 	</view>
 </template>
@@ -72,14 +80,17 @@
 				isReversing: false,
 				isShowLighting: false,
 				lightingSettingIndex: '0',
+				isShowTimer: false,
+				timerSettingIndex: '0',
 				takePhotoTimer: null,
 				reverseTimer: null,
 				
 				// 是否启用后置摄像头
 				isBack: true,
-				
 				// 存储设置的闪光灯设置
-				lightingSettingValue: "auto"
+				lightingSettingValue: "auto",
+				// 倒计时拍摄上设置
+				timerSettingValue: 'off'
 			}
 		},
 		methods: {
@@ -143,6 +154,9 @@
 				}
 			},
 			handleReverse() {
+				this.isShowLighting = false
+				this.isShowTimer = false
+				
 				// 启用按钮旋转
 				this.isReversing = true
 				// 防止快速多次点击
@@ -156,7 +170,7 @@
 				}
 			},
 			handleLighting() {
-				// 开启/关闭 选择窗
+				this.isShowTimer = false
 				this.isShowLighting = !this.isShowLighting
 			},
 			changeLightingSetting(e) {
@@ -168,6 +182,21 @@
 				}
 				if (lightingValue) {
 					this.lightingSettingValue = lightingValue
+				}
+			},
+			handleTimer() {
+				this.isShowLighting = false
+				this.isShowTimer = !this.isShowTimer
+			},
+			changeTimerSetting(e) {
+				const timerIndex = e.target.dataset.index
+				const timerValue = e.target.dataset.timermode
+				
+				if (timerIndex) {
+					this.timerSettingIndex = timerIndex
+				}
+				if (timerValue) {
+					this.timerSettingValue = timerValue
 				}
 			}
 		}
@@ -321,7 +350,58 @@
 		width: 710rpx;
 		height: 100rpx;
 		padding: 0 20rpx;
-		background-color: rgba(0, 0, 0, 0.7);
+		background-color: rgba(0, 0, 0, 0.8);
+		border-bottom-left-radius: 10rpx;
+		border-bottom-right-radius: 10rpx;
+		position: fixed;
+		top: -110rpx;
+		left: 0;
+		
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		
+		transition: all 0.3s;
+		z-index: 9;
+		
+		&.show {
+			top: 100rpx;
+			left: 0;
+		}
+		
+		.items-bar {
+			width: 100%;
+			height: 50rpx;
+			color: #fff;
+			border-radius: 10rpx;
+			overflow: hidden;
+			background-color: #000;
+			
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			
+			.select-item {
+				flex: 1;
+				height: 50rpx;
+				line-height: 50rpx;
+				text-align: center;
+				font-size: 24rpx;
+				transition: all 0.3s;
+				
+				&.select-it {
+					background-color: darkorange;
+				}
+			}
+		}
+	}
+	.timer-select-modal {
+		width: 710rpx;
+		height: 100rpx;
+		padding: 0 20rpx;
+		background-color: rgba(0, 0, 0, 0.8);
 		border-bottom-left-radius: 10rpx;
 		border-bottom-right-radius: 10rpx;
 		position: fixed;
