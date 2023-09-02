@@ -124,15 +124,17 @@
 				if (!this.takePhotoTimer) {
 					
 					// 开始拍摄照片
-					this.cameraContext.takePhoto({
-						quality: 'normal',
-						success: (res) => {
-							const { tempImagePath } = res
-							if (tempImagePath) {
-								console.log("拍照结束，图片路径为：", tempImagePath)
+					if (this.cameraContext) {
+						this.cameraContext.takePhoto({
+							quality: 'normal',
+							success: (res) => {
+								const { tempImagePath } = res
+								if (tempImagePath) {
+									console.log("拍照结束，图片路径为：", tempImagePath)
+								}
 							}
-						}
-					})
+						})
+					}
 					
 					this.takePhotoTimer = setTimeout(() => {
 						this.isClick = false
