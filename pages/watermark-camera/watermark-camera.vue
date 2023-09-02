@@ -55,6 +55,7 @@
 				<view data-index="3" data-lightmode="off" class="select-item" :class="{'select-it': lightingSettingIndex === '3'}">关闭</view>
 			</view>
 		</view>
+		<view v-show="isClick" class="take-photo-mask"></view>
 	</view>
 </template>
 
@@ -123,6 +124,15 @@
 				if (!this.takePhotoTimer) {
 					
 					// 开始拍摄照片
+					this.cameraContext.takePhoto({
+						quality: 'normal',
+						success: (res) => {
+							const { tempImagePath } = res
+							if (tempImagePath) {
+								console.log("拍照结束，图片路径为：", tempImagePath)
+							}
+						}
+					})
 					
 					this.takePhotoTimer = setTimeout(() => {
 						this.isClick = false
@@ -355,6 +365,16 @@
 				}
 			}
 		}
+	}
+	.take-photo-mask {
+		width: 100vw;
+		height: calc(100vh - 400rpx);
+		background-color: #000000;
+		position: fixed;
+		z-index: 100;
+		top: 100rpx;
+		bottom: 300rpx;
+		left: 0;
 	}
 }
 
