@@ -13,13 +13,15 @@
 				<view class="icon">
 					<image class="lighting" src="../../static/watermark-camera/top-tool-var/icon-lighting.svg"></image>
 				</view>
-				<view class="icon">
-					<image class="reverse" src="../../static/watermark-camera/top-tool-var/icon-reverse.svg" mode=""></image>
+				<view class="icon" @click="handleReverse">
+					<image class="reverse" :class="{reversing: isReversing}" 
+						src="../../static/watermark-camera/top-tool-var/icon-reverse.svg"></image>
 				</view>
 			</view>
 		</view>
 		<view class="middle-camera-review">
-			<camera class="watermark-camera" device-position="back" flash="off" @error="error"></camera>
+			<camera class="watermark-camera" :device-position="isBack ? 'back' : 'front'" 
+				flash="off" @error="error"></camera>
 		</view>
 		<view class="bottom-tools-bar">
 			<view class="tools-content">
@@ -55,18 +57,43 @@
 		},
 		data() {
 			return {
+				// 用于界面UI变动
 				isClick: false,
-				Timer: null
+				isReversing: false,
+				takePhotoTimer: null,
+				reverseTimer: null,
+				
+				// 是否启用后置摄像头
+				isBack: true,
 			}
 		},
 		methods: {
+			error() {
+				console.error("相机加载失败！！！")
+			},
 			takePhoto() {
+				// 启用UI变换
 				this.isClick = true
-				if (!this.timer) {
-					this.timer = setTimeout(() => {
+				
+				// 防止多次快速点击
+				if (!this.takePhotoTimer) {
+					this.takePhotoTimer = setTimeout(() => {
 						this.isClick = false
-						this.timer = null
+						this.takePhotoTimer = null
 					},200)
+				}
+			},
+			handleReverse() {
+				// 启用按钮旋转
+				this.isReversing = true
+				// 防止快速多次点击
+				if (!this.reverseTimer) {
+					// 切换相机前后镜头
+					this.isBack = !this.isBack
+					this.reverseTimer = setTimeout(() => {
+						this.isReversing = false
+						this.reverseTimer = null
+					},2000)
 				}
 			}
 		}
@@ -121,6 +148,10 @@
 					left: 25rpx;
 					width: 50rpx;
 					height: 50rpx;
+					
+					&.reversing {
+						animation: reversing 2s;
+					}
 				}
 			}
 		}
@@ -220,6 +251,15 @@
 	}
 	100% {
 		transform: scale(1);
+	}
+}
+
+@keyframes reversing {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(180deg);
 	}
 }
 </style>
