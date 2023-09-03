@@ -21,8 +21,10 @@
             "path" : "pages/renderPhoto/renderPhoto",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
+                "navigationBarTitleText": "图像预览",
+                "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#000000",
+				"navigationBarTextStyle": "white"
             }
             
         }
