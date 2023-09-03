@@ -170,6 +170,9 @@
 						const { tempImagePath } = res
 						if (tempImagePath) {
 							console.log("拍照结束，图片路径为：", tempImagePath)
+							uni.navigateTo({
+								url: `/pages/renderPhoto/renderPhoto?tempImagePath=${tempImagePath}`
+							})
 						}
 					},
 					complete: () => {
