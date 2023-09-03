@@ -17,12 +17,24 @@
             }
             
         }
+        ,{
+            "path" : "pages/renderPhoto/renderPhoto",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"usingComponents": {
+			"wxml-to-canvas": "./wxcomponents/wxml-to-canvas/index.js"
+		}
 	},
 	"uniIdRouter": {}
 }
