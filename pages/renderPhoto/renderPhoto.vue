@@ -89,12 +89,51 @@
 			},
 			saveImage() {
 				console.log("保存图片")
+				uni.authorize({
+					scope: 'scope.writePhotosAlbum',
+					fail: () => {
+						uni.showModal({
+							title: '注意',
+							content: '未取得相册存储权限，无法保存照片',
+							showCancel: false,
+							confirmColor: "#dd524d",
+							success: () => {},
+						});
+					}
+				})
 				// 格式有 jpg 和 png
 				// 1 为质量最高，0.xxxx质量会变低
 				this.widget.canvasToTempFilePath({
 					fileType: 'jpg',
 					quality: 1
 				})
+				.then((res) => {
+					const {errMsg, tempFilePath} = res
+					if (errMsg === 'canvasToTempFilePath:ok') {
+						uni.saveImageToPhotosAlbum({
+							filePath: tempFilePath,
+							success: ({errMsg}) => {
+								if (errMsg === 'saveImageToPhotosAlbum:ok') {
+									uni.showModal({
+										title: '注意',
+										content: `图片保存完成!`,
+										showCancel: false,
+										success: () => {},
+									})
+								} else {
+									uni.showModal({
+										title: '注意',
+										content: `图片保存失败!`,
+										showCancel: false,
+										confirmColor: "#dd524d",
+										success: () => {},
+									})
+								}
+							}
+						})
+					}
+				})
+				
 			},
 			createWXML() {
 				// 生成 wxml
@@ -144,23 +183,30 @@
 </script>
 
 <style scoped lang="less">
-	.btns-group {
+	.main-container {
 		width: 750rpx;
-		height: 200rpx;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-
-		button {
-			padding: 20rpx 50rpx;
-
-			&:nth-child(1) {
-				margin-right: 30rpx;
-			}
-
-			&:nth-child(2) {
-				margin-left: 30rpx;
+		height: 100vh;
+		background-color: #000000;
+		
+		.btns-group {
+			width: 750rpx;
+			height: 200rpx;
+			
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+		
+			button {
+				width: 300rpx;
+		
+				&:nth-child(1) {
+					margin-right: 30rpx;
+				}
+		
+				&:nth-child(2) {
+					margin-left: 30rpx;
+				}
 			}
 		}
 	}
