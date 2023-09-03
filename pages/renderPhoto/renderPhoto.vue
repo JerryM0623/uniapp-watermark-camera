@@ -1,6 +1,11 @@
 <template>
 	<view class="main-container">
-		<wxml-to-canvas class="widget"></wxml-to-canvas>
+		<wxml-to-canvas class="widget" :width="canvasOption.width" :height="canvasOption.height"></wxml-to-canvas>
+
+		<view class="btns-group">
+			<button @click="backToCamera">重新拍摄</button>
+			<button type="primary" @click="saveImage">保存图片</button>
+		</view>
 	</view>
 </template>
 
@@ -8,38 +13,155 @@
 	export default {
 		onLoad(options) {
 			const widget = this.selectComponent('.widget')
-			 if (widget) {
-				 this.widget = widget
-			 }
-			 
-			 // 获取携带参数
-			 const tempFilePath = options.tempFilePath
-			 if (!tempFilePath) {
-				 uni.showModal({
-				 	title: '注意',
-				 	content: '图像渲染错误，请重新拍摄！',
-				 	showCancel: false,
+			if (widget) {
+				this.widget = widget
+			}
+
+			// 获取携带参数
+			const tempImagePath = options.tempImagePath
+			if (!tempImagePath) {
+				uni.showModal({
+					title: '注意',
+					content: '图像渲染错误，请重新拍摄！',
+					showCancel: false,
 					confirmColor: "#dd524d",
-				 	success: res => {
-						// 返回上一层
+					success: res => {
 						uni.navigateBack()
 					},
-				 });
-			 } else {
-				 this.tempFilePath = tempFilePath
-			 }
+				});
+			} else {
+				this.tempImagePath = tempImagePath
+				console.log(this.tempImagePath)
+				this.createWXML()
+			}
+		},
+		onReady() {
+				setTimeout(() => {
+					this.calculatePhotoSize()
+					this.renderCanvas()
+				}, 500)
 		},
 		data() {
 			return {
 				// canvas 渲染层
 				widget: null,
 				// 图像文件缓存链接
-				tempFilePath: ''
+				tempImagePath: '',
+				// canvas 配置
+				canvasOption: {
+					// 宽高单位 px
+					width: 375,
+					height: 600
+				},
+				// canvas 渲染内容
+				wxml: '',
+				// canvas 渲染样式
+				style: {
+					container: {
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,100仅仅用于占位
+						width: 300,
+						height: 300
+					},
+					tempPhoto: {
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,100仅仅用于占位
+						width: 300,
+						height: 300
+					},
+					watermarkWrapper: {
+						width: 150,
+						height: 150,
+						position: 'absolute',
+						left: 10,
+						bottom: 10,
+						padding: 10,
+						borderWidth: 5,
+					},
+					item: {
+						color: "#aabc33",
+						backgroundColor: "#000000"
+					}
+				}
 			};
+		},
+		methods: {
+			backToCamera() {
+				uni.navigateBack()
+			},
+			saveImage() {
+				console.log("保存图片")
+				// 格式有 jpg 和 png
+				// 1 为质量最高，0.xxxx质量会变低
+				this.widget.canvasToTempFilePath({
+					fileType: 'jpg',
+					quality: 1
+				})
+			},
+			createWXML() {
+				// 生成 wxml
+				this.wxml = `<view class="container" >
+					<image class="temp-photo" src="${this.tempImagePath}"></image>
+				</view>`
+				console.log(this.wxml)
+			},
+			renderCanvas() {
+				// 渲染 canvas
+				this.widget.renderToCanvas({
+						wxml: this.wxml,
+						style: this.style
+					})
+					.then(() => {})
+					.catch(() => {})
+			},
+			calculatePhotoSize(){
+				// 宽应该和屏幕宽度一致
+				// 高度应该是 （100vh - 400rpx）之后在根据 dpr 比例转换成真实 px 值
+				// 图像高度应该是和container一致
+				const info = uni.getSystemInfoSync()
+				const width = info.windowWidth
+				const height = info.windowHeight
+				const pixelRatio = info.pixelRatio
+				console.log({
+					width,
+					height,
+					pixelRatio
+				})
+				
+				// 开始计算
+				const realWidth = width
+				const realHeight = Math.round(((height * pixelRatio) - 400) / pixelRatio);
+				console.log({
+					realWidth,
+					realHeight
+				})
+				
+				this.style.container.width = realWidth
+				this.style.container.height = realHeight
+				this.style.tempPhoto.width = realWidth
+				this.style.tempPhoto.height = realHeight
+			}
 		}
 	}
 </script>
 
-<style lang="less">
+<style scoped lang="less">
+	.btns-group {
+		width: 750rpx;
+		height: 200rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
 
+		button {
+			padding: 20rpx 50rpx;
+
+			&:nth-child(1) {
+				margin-right: 30rpx;
+			}
+
+			&:nth-child(2) {
+				margin-left: 30rpx;
+			}
+		}
+	}
 </style>
