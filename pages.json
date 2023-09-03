@@ -33,7 +33,7 @@
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8",
 		"usingComponents": {
-			"wxml-to-canvas": "./wxcomponents/wxml-to-canvas/index.js"
+			"wxml-to-canvas": "/wxcomponents/wxml-to-canvas/index"
 		}
 	},
 	"uniIdRouter": {}
