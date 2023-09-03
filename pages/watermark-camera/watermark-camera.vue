@@ -127,15 +127,15 @@
 			},
 			error() {
 				console.error("相机加载失败！！！")
-				uni.showModal({
-					title: "注意",
-					content:"当前设备暂不支持相机！！！",
-					showCancel: false,
-					confirmColor: "#dd524d",
-					success: () => {
-						uni.navigateBack()
-					}
-				})
+				// uni.showModal({
+				// 	title: "注意",
+				// 	content:"当前设备暂不支持相机！！！",
+				// 	showCancel: false,
+				// 	confirmColor: "#dd524d",
+				// 	success: () => {
+				// 		uni.navigateBack()
+				// 	}
+				// })
 			},
 			takePhoto() {
 				// 启用UI变换
@@ -149,33 +149,11 @@
 						if (this.timerSettingValue !== 'off') {
 							setTimeout(() => {
 								this.isShowTakePhotoMask = true
-								this.cameraContext.takePhoto({
-									quality: 'normal',
-									success: (res) => {
-										const { tempImagePath } = res
-										if (tempImagePath) {
-											console.log("拍照结束，图片路径为：", tempImagePath)
-										}
-									},
-									complete: () => {
-										this.isShowTakePhotoMask = false
-									}
-								})
+								this.handleTakePhoto()
 							}, Number(this.timerSettingValue) * 1000)
 						} else {
 							this.isShowTakePhotoMask = true
-							this.cameraContext.takePhoto({
-								quality: 'normal',
-								success: (res) => {
-									const { tempImagePath } = res
-									if (tempImagePath) {
-										console.log("拍照结束，图片路径为：", tempImagePath)
-									}
-								},
-								complete: () => {
-									this.isShowTakePhotoMask = false
-								}
-							})
+							this.handleTakePhoto()
 						}
 					}
 					
@@ -184,6 +162,20 @@
 						this.takePhotoTimer = null
 					},200)
 				}
+			},
+			handleTakePhoto() {
+				this.cameraContext.takePhoto({
+					quality: 'normal',
+					success: (res) => {
+						const { tempImagePath } = res
+						if (tempImagePath) {
+							console.log("拍照结束，图片路径为：", tempImagePath)
+						}
+					},
+					complete: () => {
+						this.isShowTakePhotoMask = false
+					}
+				})
 			},
 			handleReverse() {
 				this.isShowLighting = false
