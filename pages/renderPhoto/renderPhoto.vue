@@ -15,7 +15,7 @@
 			 // 获取携带参数
 			 const tempFilePath = options.tempFilePath
 			 if (!tempFilePath) {
-				 uni.,uni.showModal({
+				 uni.showModal({
 				 	title: '注意',
 				 	content: '图像渲染错误，请重新拍摄！',
 				 	showCancel: false,
