@@ -546,7 +546,6 @@
 	}
 	.photo-watermark-area {
 		width: 750rpx;
-		height: 100rpx;
 		background-color: #fff;
 		position: fixed;
 		left: 0;
@@ -556,9 +555,7 @@
 		
 		.content {
 			width: 710rpx;
-			height: 100rpx;
-			padding-left: 20rpx;
-			padding-right: 20rpx;
+			padding: 10rpx 20rpx;
 			
 			display: flex;
 			flex-direction: row;
@@ -566,8 +563,11 @@
 			
 			.item {
 				width: 355rpx;
-				height: 50rpx;
-				line-height: 50rpx;
+				
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: flex-start;
 			}
 		}
 	}
