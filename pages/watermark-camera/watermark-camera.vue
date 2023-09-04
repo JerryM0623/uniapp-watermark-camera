@@ -495,7 +495,7 @@
 		left: 20rpx;
 		bottom: 320rpx;
 		color: #000000;
-		font-weight: 700;
+		font-size: 28rpx;
 	}
 	.take-photo-mask {
 		width: 100vw;
