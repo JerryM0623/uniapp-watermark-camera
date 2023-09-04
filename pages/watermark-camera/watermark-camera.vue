@@ -127,7 +127,6 @@
 				}
 			},
 			initdone() {
-				console.log("相机初始化完成！！！")
 				const cameraContext = uni.createCameraContext()
 				if (!cameraContext) {
 					uni.showModal({
@@ -141,7 +140,6 @@
 					})
 					return;
 				}
-				console.log("获取到相机实例：", cameraContext)
 				this.cameraContext = cameraContext
 			},
 			error() {
@@ -251,8 +249,6 @@
 					altitude: false,
 					isHighAccuracy: true,
 					success: (res) => {
-						console.log('当前位置的经度：' + res.longitude);
-						console.log('当前位置的纬度：' + res.latitude);
 						const longitude = res.longitude < 0 ? Math.abs(res.longitude).toString() + 'W' : Math.abs(res.longitude).toString() + 'E' 
 						const latitude = res.latitude < 0 ? Math.abs(res.latitude).toString() + 'S' : Math.abs(res.latitude).toString() + 'N'
 						this.watermarkData.longitude = longitude
