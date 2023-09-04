@@ -545,14 +545,31 @@
 		}
 	}
 	.photo-watermark-area {
-		padding: 20rpx;
-		background-color: rgba(255, 255, 255, 0.5);
-		border: 10rpx solid #ffffff;
+		width: 750rpx;
+		height: 100rpx;
+		background-color: #fff;
 		position: fixed;
-		left: 20rpx;
-		bottom: 320rpx;
+		left: 0;
+		bottom: 300rpx;
 		color: #000000;
-		font-size: 28rpx;
+		font-size: 24rpx;
+		
+		.content {
+			width: 710rpx;
+			height: 100rpx;
+			padding-left: 20rpx;
+			padding-right: 20rpx;
+			
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			
+			.item {
+				width: 355rpx;
+				height: 50rpx;
+				line-height: 50rpx;
+			}
+		}
 	}
 	.take-photo-mask {
 		width: 100vw;
