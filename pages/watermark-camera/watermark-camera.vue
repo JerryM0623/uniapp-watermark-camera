@@ -190,7 +190,7 @@
 						if (tempImagePath) {
 							console.log("拍照结束，图片路径为：", tempImagePath)
 							uni.navigateTo({
-								url: `/pages/renderPhoto/renderPhoto?tempImagePath=${tempImagePath}`
+								url: `/pages/renderPhoto/renderPhoto?tempImagePath=${tempImagePath}&time=${this.watermarkData.time}&location=${this.watermarkData.location}&longitude=${this.watermarkData.longitude}&latitude=${this.watermarkData.latitude}`
 							})
 						}
 					},
