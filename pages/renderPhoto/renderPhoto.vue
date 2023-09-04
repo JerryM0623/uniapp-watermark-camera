@@ -34,10 +34,14 @@
 				console.log(this.tempImagePath)
 				this.createWXML()
 			}
+			
+			const { time, location, latitude, longitude } = options
+			
 		},
 		onReady() {
 				setTimeout(() => {
 					this.calculatePhotoSize()
+					this.calculateWatermarkSize()
 					this.renderCanvas()
 				}, 500)
 		},
@@ -53,32 +57,54 @@
 					width: 375,
 					height: 600
 				},
+				watermarkData: {
+					time: '',
+					location: '',
+					longitude: '',
+					latitude: ''
+				},
 				// canvas 渲染内容
 				wxml: '',
 				// canvas 渲染样式
 				style: {
 					container: {
-						// 宽高需要根据设备的屏幕实际尺寸进行计算,100仅仅用于占位
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
 						width: 300,
 						height: 300
 					},
 					tempPhoto: {
-						// 宽高需要根据设备的屏幕实际尺寸进行计算,100仅仅用于占位
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
 						width: 300,
 						height: 300
 					},
-					watermarkWrapper: {
-						width: 150,
-						height: 150,
+					photoWatermarkArea: {
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
+						width: 300,
+						height: 300,
 						position: 'absolute',
-						left: 10,
-						bottom: 10,
-						padding: 10,
-						borderWidth: 5,
+						left: 0,
+						bottom: 0,
+						paddingLeft: 10,
+						paddingRight: 10,
+						paddingTop: 5,
+						paddingBottom: 5,
+						fontSize: 14,
+						color: '#000000'
+					},
+					Content: {
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
+						width: 300,
+						height: 300,
+						flexDirection: 'row',
+						flexWrap: 'wrap'
 					},
 					item: {
-						color: "#aabc33",
-						backgroundColor: "#000000"
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
+						width: 300,
+						height: 300,
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'flex-start'
 					}
 				}
 			};
@@ -139,6 +165,14 @@
 				// 生成 wxml
 				this.wxml = `<view class="container" >
 					<image class="temp-photo" src="${this.tempImagePath}"></image>
+					<view class="photo-watermark-area">
+						<view class="content">
+							<view class="item time">时间：${this.watermarkData.time === '' ? '加载中...' : this.watermarkData.time}</view>
+							<view class="item location">地点：${this.watermarkData.location === '' ? '请点击地点按钮手动输入...' : this.watermarkData.location}</view>
+							<view class="item longitude">精度：${this.watermarkData.longitude === '' ? '正在获取中...' : this.watermarkData.longitude}</view>
+							<view class="item latitude">纬度：${this.watermarkData.latitude === '' ? '正在获取中...' : this.watermarkData.latitude}</view>
+						</view>
+					</view>
 				</view>`
 				console.log(this.wxml)
 			},
@@ -177,6 +211,9 @@
 				this.style.container.height = realHeight
 				this.style.tempPhoto.width = realWidth
 				this.style.tempPhoto.height = realHeight
+			},
+			calculateWatermarkSize(height) {
+				console.log("计算水印尺寸")
 			}
 		}
 	}
