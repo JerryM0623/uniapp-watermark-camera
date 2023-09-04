@@ -29,9 +29,9 @@
 					<view class="icon thumbnail"></view>
 					<view class="text">相册</view>
 				</view>
-				<view class="tool photo-location" @click="getLocation">
+				<view class="tool photo-location" @click="addLocation">
 					<image class="icon location" src="../../static/watermark-camera/bottom-tool-bar/icon-location.svg"></image>
-					<view class="text">地址</view>
+					<view class="text">地点</view>
 				</view>
 				<view class="tool take-photo-btn" @click="takePhoto">
 					<view class="border" :class="{touch: isClick}" @click=takePhoto></view>
