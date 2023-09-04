@@ -68,7 +68,7 @@
 				<view class="item time">时间：{{ watermarkData.time === '' ? '加载中...' : watermarkData.time }}</view>
 				<view class="item location">地点：{{ watermarkData.location === '' ? '请点击地点按钮手动输入...' : watermarkData.location }}</view>
 				<view class="item longitude">精度：{{ watermarkData.longitude === '' ? '正在获取中...' : watermarkData.longitude }}</view>
-				<view class="item latitude">维度：{{ watermarkData.latitude === '' ? '正在获取中...' : watermarkData.latitude }}</view>
+				<view class="item latitude">纬度：{{ watermarkData.latitude === '' ? '正在获取中...' : watermarkData.latitude }}</view>
 				<!-- <view class="item weather">天气：晴 31℃</view> -->
 			</view>
 		</view>
@@ -254,7 +254,7 @@
 						console.log('当前位置的经度：' + res.longitude);
 						console.log('当前位置的纬度：' + res.latitude);
 						const longitude = res.longitude < 0 ? Math.abs(res.longitude).toString() + 'W' : Math.abs(res.longitude).toString() + 'E' 
-						const latitude = res.latitude < 0 ? Math.abs(res.latitude).toString() + 'S' : Math.abs(res.longitude).toString() + 'N'
+						const latitude = res.latitude < 0 ? Math.abs(res.latitude).toString() + 'S' : Math.abs(res.latitude).toString() + 'N'
 						this.watermarkData.longitude = longitude
 						this.watermarkData.latitude = latitude
 					},
