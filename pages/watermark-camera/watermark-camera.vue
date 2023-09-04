@@ -63,13 +63,13 @@
 				<view data-index="3" data-timermode="10" class="select-item" :class="{'select-it': timerSettingIndex === '3'}">10S</view>
 			</view>
 		</view>
-		<view class="photo-watermark-area">
+		<view v-if="showCamera" class="photo-watermark-area">
 			<view class="content">
-				<view class="item time">时间：2023.09.03 00:07</view>
-				<view class="item location">地点：浙江省 宁波市 南部商务区</view>
-				<view class="item longitude">精度：121.115634E</view>
-				<view class="item latitude">维度：33.886572N</view>
-				<view class="item weather">天气：晴 31℃</view>
+				<view class="item time">时间：{{ watermarkData.time === '' ? '加载中...' : watermarkData.time }}</view>
+				<view class="item location">地点：{{ watermarkData.location === '' ? '请点击地点按钮手动输入...' : watermarkData.location }}</view>
+				<view class="item longitude">精度：{{ watermarkData.longitude === '' ? '正在获取中...' : watermarkData.longitude }}</view>
+				<view class="item latitude">维度：{{ watermarkData.latitude === '' ? '正在获取中...' : watermarkData.latitude }}</view>
+				<!-- <view class="item weather">天气：晴 31℃</view> -->
 			</view>
 		</view>
 		<view v-show="isShowTakePhotoMask" class="take-photo-mask"></view>
@@ -100,12 +100,31 @@
 				// 存储设置的闪光灯设置
 				lightingSettingValue: "auto",
 				// 倒计时拍摄上设置
-				timerSettingValue: 'off'
+				timerSettingValue: 'off',
+				
+				// 水印数据
+				watermarkData: {
+					time: '',
+					location: '',
+					longitude: '',
+					latitude: ''
+				},
+				updateDateTimeTimer: null
 			}
 		},
 		methods: {
-			onLoad() {
-				setTimeout(() => {this.showCamera = true}, 200)
+			onShow() {
+				setTimeout(() => {
+					this.showCamera = true
+				}, 200)
+				this.updateDateTime()
+				this.updateDateTimeTimer = setInterval(this.updateDateTime, 30000);
+				this.getLocation()
+			},
+			onHide() {
+				if (this.updateDateTimeTimer) {
+					clearInterval(this.updateDateTimeTimer)
+				}
 			},
 			initdone() {
 				console.log("相机初始化完成！！！")
@@ -234,11 +253,49 @@
 					success: (res) => {
 						console.log('当前位置的经度：' + res.longitude);
 						console.log('当前位置的纬度：' + res.latitude);
+						const longitude = res.longitude < 0 ? Math.abs(res.longitude).toString() + 'W' : Math.abs(res.longitude).toString() + 'E' 
+						const latitude = res.latitude < 0 ? Math.abs(res.latitude).toString() + 'S' : Math.abs(res.longitude).toString() + 'N'
+						this.watermarkData.longitude = longitude
+						this.watermarkData.latitude = latitude
 					},
 					fail: (error) => {
 						console.error("定位获取失败", error.errMsg)
 					}
 				})
+			},
+			addLocation() {
+				uni.showModal({
+					title: '添加地点',
+					editable: true,
+					placeholderText: '请输入所在地名称',
+					success: (res) => {
+						if (res.confirm) {
+							if (!res.content) {
+								uni.showToast({
+									title: '请填写地点',
+									icon: 'none',
+									duration: 2000
+								});
+							} else {
+								this.watermarkData.location = res.content
+							}
+						}
+					}
+				});
+			},
+			getCurrentDateTime() {
+				const now = new Date();
+				const year = now.getFullYear();
+				const month = String(now.getMonth() + 1).padStart(2, '0');
+				const day = String(now.getDate()).padStart(2, '0');
+				const hours = String(now.getHours()).padStart(2, '0');
+				const minutes = String(now.getMinutes()).padStart(2, '0');
+				
+				return `${year}.${month}.${day} ${hours}:${minutes}`;
+			},
+			updateDateTime() {
+			  const currentDateTime = this.getCurrentDateTime();
+			  this.watermarkData.time = currentDateTime
 			}
 		}
 	}
