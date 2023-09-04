@@ -31,7 +31,6 @@
 				});
 			} else {
 				this.tempImagePath = tempImagePath
-				console.log(this.tempImagePath)
 				this.createWXML()
 			}
 			
@@ -114,7 +113,6 @@
 				uni.navigateBack()
 			},
 			saveImage() {
-				console.log("保存图片")
 				uni.authorize({
 					scope: 'scope.writePhotosAlbum',
 					fail: () => {
@@ -174,7 +172,6 @@
 						</view>
 					</view>
 				</view>`
-				console.log(this.wxml)
 			},
 			renderCanvas() {
 				// 渲染 canvas
@@ -193,19 +190,10 @@
 				const width = info.windowWidth
 				const height = info.windowHeight
 				const pixelRatio = info.pixelRatio
-				console.log({
-					width,
-					height,
-					pixelRatio
-				})
 				
 				// 开始计算
 				const realWidth = width
 				const realHeight = Math.round(((height * pixelRatio) - 400) / pixelRatio);
-				console.log({
-					realWidth,
-					realHeight
-				})
 				
 				this.style.container.width = realWidth
 				this.style.container.height = realHeight
@@ -213,7 +201,6 @@
 				this.style.tempPhoto.height = realHeight
 			},
 			calculateWatermarkSize(height) {
-				console.log("计算水印尺寸")
 			}
 		}
 	}
