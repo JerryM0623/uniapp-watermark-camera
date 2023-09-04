@@ -186,9 +186,10 @@
 					success: (res) => {
 						const { tempImagePath } = res
 						if (tempImagePath) {
-							console.log("拍照结束，图片路径为：", tempImagePath)
+							// 计算水印相关大小
+							this.calculateWatermarkAreaSize()
 							uni.navigateTo({
-								url: `/pages/renderPhoto/renderPhoto?tempImagePath=${tempImagePath}&time=${this.watermarkData.time}&location=${this.watermarkData.location}&longitude=${this.watermarkData.longitude}&latitude=${this.watermarkData.latitude}`
+								url: `/pages/renderPhoto/renderPhoto?tempImagePath=${tempImagePath}`
 							})
 						}
 					},
@@ -292,6 +293,75 @@
 			updateDateTime() {
 			  const currentDateTime = this.getCurrentDateTime();
 			  this.watermarkData.time = currentDateTime
+			},
+			calculateWatermarkAreaSize() {
+				// 创建元素选择器
+				const query = uni.createSelectorQuery().in(this)
+				
+				// 获取设备信息
+				const info = uni.getSystemInfoSync()
+				const pixelRatio = info.pixelRatio
+				
+				// 水印区块的宽度 = 屏幕宽度
+				const watermarkAreaWidth = info.windowWidth
+				
+				// 水印区块的高度 = 直接获取
+				let watermarkAreaHeight = 100
+				query.select(".photo-watermark-area").boundingClientRect((rect) => {
+					watermarkAreaHeight = rect.height
+				})
+				
+				// 内容区块的宽度
+				const contentWidth = Math.round((((watermarkAreaWidth * pixelRatio) - 40) / pixelRatio))
+				// 内容区块的高度
+				const contentHeight = watermarkAreaHeight
+				// 内容区块的padding值
+				
+				// 水印区块每一个元素的宽度都等于水印区块的宽度 - 左右缩进的宽度(共计40rpx)
+				// 每一个元素的宽度 = Math.round((((屏幕宽度 * dpr) - 左右各20rpx)/ 2)/dpr)
+				const itemsWidth = Math.round((((watermarkAreaWidth * pixelRatio) - 40) / 2) / pixelRatio)
+				
+				// 每一个元素的高度宽度集合
+				const itemsSize = {
+					time: {
+						width: itemsWidth,
+						height: 100
+					},
+					location: {
+						width: itemsWidth,
+						height: 100
+					},
+					longitude: {
+						width: itemsWidth,
+						height: 100
+					},
+					latitude: {
+						width: itemsWidth,
+						height: 100
+					}
+				}
+				query.select(".item.time").boundingClientRect((rect) => {
+					itemsSize.time.height = rect.height
+				})
+				query.select(".item.location").boundingClientRect((rect) => {
+					itemsSize.location.height = rect.height
+				})
+				query.select(".item.longitude").boundingClientRect((rect) => {
+					itemsSize.longitude.height = rect.height
+				})
+				query.select(".item.latitude").boundingClientRect((rect) => {
+					itemsSize.latitude.height = rect.height
+				})
+				
+				query.exec((result) => {
+					console.log(`水印区域宽度: ${watermarkAreaWidth}, 水印区域高度: ${watermarkAreaHeight}`)
+					for (let key in itemsSize) {
+						console.log(`${key}的宽的为${itemsSize[key].width}, 高度为${itemsSize[key].height}`)
+					}
+					uni.setStorageSync('watermarkSize', {watermarkAreaWidth, watermarkAreaHeight})
+					uni.setStorageSync('contentSize', {})
+					uni.setStorageSync('itemsSize', itemsSize)
+				})
 			}
 		}
 	}
