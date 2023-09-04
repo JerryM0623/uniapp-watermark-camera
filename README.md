@@ -30,5 +30,15 @@
    > 微信开发者工具：[微信开发者工具下载地址与更新日志 | 微信开放文档 ](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
    > HBuilderX：[HBuilderX-下载 ](https://www.dcloud.io/hbuilderx.html)
 
-4. 在 HBuilderX的顶部菜单【运行-运行到小程序模拟器-微信开发者工具】系统便会自动进行编译及以来的下载，并在微信开发者工具中运行小程序。
+4. 获取专属于您的微信小程序测试号
+   
+   - 使用您的微信账户扫码登陆微信开发者工具
+   - 新建一个小程序项目，并点击【测试号】按钮获取一个新的测试号
+   - 复制这个新的测试号
+   - 使用 `HBuilderX` 打开 `uniapp-watermark-camera` 项目
+   - 进入 `manifest.json` 文件，点击微信小程序专区
+   - 将你复制的测试号复制粘贴覆盖已有的【微信小程序AppID】
+   - 保存文件
+
+5. 在 HBuilderX的顶部菜单【运行-运行到小程序模拟器-微信开发者工具】系统便会自动进行编译及以来的下载，并在微信开发者工具中运行小程序。
    **注：由于内置相机组件的特殊性，建议在真机上进行预览。**
