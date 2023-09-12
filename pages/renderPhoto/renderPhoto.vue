@@ -178,15 +178,6 @@
 			},
 			createWXML() {
 				// 生成 wxml
-				// <view class="item time">时间：${this.watermarkData.time === '' ? '加载中...' : this.watermarkData.time}</view>
-				// <view class="item location">地点：${this.watermarkData.location === '' ? '请点击地点按钮手动输入...' : this.watermarkData.location}</view>
-				// <view class="item longitude">精度：${this.watermarkData.longitude === '' ? '正在获取中...' : this.watermarkData.longitude}</view>
-				// <view class="item latitude">纬度：${this.watermarkData.latitude === '' ? '正在获取中...' : this.watermarkData.latitude}</view>
-				// <view class="photo-watermark-area">
-				// 	<view class="content">
-				// 		
-				// 	</view>
-				// </view>
 				this.wxml = `<view class="container" ><image class="temp-photo" src="${this.tempImagePath}">
 						<view class="watermark">
 							<text class="time">时间：${this.watermarkData.time === '' ? '加载中...' : this.watermarkData.time}</text>
@@ -230,10 +221,6 @@
 				this.style.location.width = realWidth
 				this.style.longitude.width = realWidth
 				this.style.latitude.width = realWidth
-				// this.style.time.width = Math.round(realWidth / 2)
-				// this.style.location.width = Math.round(realWidth / 2)
-				// this.style.longitude.width = Math.round(realWidth / 2)
-				// this.style.latitude.width = Math.round(realWidth / 2)
 				
 			}
 		}
