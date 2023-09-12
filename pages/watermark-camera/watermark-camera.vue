@@ -491,16 +491,6 @@
 							animation: takephoto 0.2s;
 						}
 					}
-					// .button{
-					// 	width: 110rpx;
-					// 	height: 110rpx;
-					// 	border-radius: 50%;
-					// 	background-color: #ffffff;
-					// 	position: absolute;
-					// 	top: 50%;
-					// 	left: 50%;
-					// 	transform: translate(-50%, -50%);
-					// }
 				}
 				
 				.icon {
@@ -624,28 +614,19 @@
 	}
 	.photo-watermark-area {
 		width: 750rpx;
-		background-color: #fff;
+		background-color: rgba(0,0,0,0.5);
 		position: fixed;
 		left: 0;
 		bottom: 300rpx;
-		color: #000000;
-		font-size: 24rpx;
+		color: #ffffff;
+		font-size: 32rpx;
 		
 		.content {
-			width: 710rpx;
-			padding: 10rpx 20rpx;
-			
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
+			width: 750rpx;
 			
 			.item {
-				width: 355rpx;
-				
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: flex-start;
+				width: 750rpx;
+				height: 64rpx;
 			}
 		}
 	}
