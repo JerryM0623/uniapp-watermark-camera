@@ -11,39 +11,6 @@
 
 <script>
 	export default {
-		onLoad(options) {
-			const widget = this.selectComponent('.widget')
-			if (widget) {
-				this.widget = widget
-			}
-
-			// 获取携带参数
-			const tempImagePath = options.tempImagePath
-			if (!tempImagePath) {
-				uni.showModal({
-					title: '注意',
-					content: '图像渲染错误，请重新拍摄！',
-					showCancel: false,
-					confirmColor: "#dd524d",
-					success: res => {
-						uni.navigateBack()
-					},
-				});
-			} else {
-				this.tempImagePath = tempImagePath
-				this.createWXML()
-			}
-			
-			const { time, location, latitude, longitude } = options
-			
-		},
-		onReady() {
-				setTimeout(() => {
-					this.calculatePhotoSize()
-					this.setWatermarkSize()
-					this.renderCanvas()
-				}, 500)
-		},
 		data() {
 			return {
 				// canvas 渲染层
@@ -76,37 +43,77 @@
 						width: 300,
 						height: 300
 					},
-					photoWatermarkArea: {
-						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
+					watermark: {
 						width: 300,
-						height: 300,
+						height: 120,
 						position: 'absolute',
-						left: 0,
-						top: 0,
-						fontSize: 14,
-						color: '#000000'
+						bottom: 0,
+						left: 0
 					},
-					content: {
+					time: {
 						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
-						width: 300,
-						height: 300,
-						paddingLeft: 10,
-						paddingRight: 10,
-						paddingTop: 5,
-						paddingBottom: 5,
-						flexDirection: 'row',
-						flexWrap: 'wrap'
+						width: 173,
+						height: 32,
+						fontSize: 16,
+						color: '#ffffff',
+						backgroundColor: 'rgba(0,0,0,0.5)'
 					},
-					// item: {
-					// 	// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
-					// 	width: 300,
-					// 	height: 300,
-					// 	flexDirection: 'column',
-					// 	justifyContent: 'center',
-					// 	alignItems: 'flex-start'
-					// }
+					location: {
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
+						width: 173,
+						height: 32,
+						fontSize: 16,
+						color: '#ffffff',
+						backgroundColor: 'rgba(0,0,0,0.5)'
+					},
+					longitude: {
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
+						width: 173,
+						height: 32,
+						fontSize: 16,
+						color: '#ffffff',
+						backgroundColor: 'rgba(0,0,0,0.5)'
+					},
+					latitude: {
+						// 宽高需要根据设备的屏幕实际尺寸进行计算,300仅仅用于占位
+						width: 173,
+						height: 32,
+						fontSize: 16,
+						color: '#ffffff',
+						backgroundColor: 'rgba(0,0,0,0.5)'
+					}
 				}
 			};
+		},
+		onLoad(options) {
+			const widget = this.selectComponent('.widget')
+			if (widget) {
+				this.widget = widget
+			}
+		
+			// 获取携带参数
+			const tempImagePath = options.tempImagePath
+			if (!tempImagePath) {
+				uni.showModal({
+					title: '注意',
+					content: '图像渲染错误，请重新拍摄！',
+					showCancel: false,
+					confirmColor: "#dd524d",
+					success: res => {
+						uni.navigateBack()
+					},
+				});
+			} else {
+				this.tempImagePath = tempImagePath
+				this.getWatermarkData()
+				this.createWXML()
+			}
+		},
+		onReady() {
+			setTimeout(() => {
+				this.calculatePhotoSize()
+				this.renderCanvas()
+			}, 500)
 		},
 		methods: {
 			backToCamera() {
@@ -159,18 +166,35 @@
 				})
 				
 			},
+			getWatermarkData() {
+				const watermarkData = uni.getStorageSync('watermarkData')
+				if (!watermarkData) {
+					return;
+				}
+				this.watermarkData.time = watermarkData.time
+				this.watermarkData.location = watermarkData.location
+				this.watermarkData.longitude = watermarkData.longitude
+				this.watermarkData.latitude = watermarkData.latitude
+			},
 			createWXML() {
 				// 生成 wxml
 				// <view class="item time">时间：${this.watermarkData.time === '' ? '加载中...' : this.watermarkData.time}</view>
 				// <view class="item location">地点：${this.watermarkData.location === '' ? '请点击地点按钮手动输入...' : this.watermarkData.location}</view>
 				// <view class="item longitude">精度：${this.watermarkData.longitude === '' ? '正在获取中...' : this.watermarkData.longitude}</view>
 				// <view class="item latitude">纬度：${this.watermarkData.latitude === '' ? '正在获取中...' : this.watermarkData.latitude}</view>
-				this.wxml = `<view class="container" >
-					<image class="temp-photo" src="${this.tempImagePath}"></image>
-					<view class="photo-watermark-area">
-						<view class="content">
+				// <view class="photo-watermark-area">
+				// 	<view class="content">
+				// 		
+				// 	</view>
+				// </view>
+				this.wxml = `<view class="container" ><image class="temp-photo" src="${this.tempImagePath}">
+						<view class="watermark">
+							<text class="time">时间：${this.watermarkData.time === '' ? '加载中...' : this.watermarkData.time}</text>
+							<text class="location">地点：${this.watermarkData.location === '' ? '请点击地点按钮手动输入...' : this.watermarkData.location}</text>
+							<text class="longitude">精度：${this.watermarkData.longitude === '' ? '正在获取中...' : this.watermarkData.longitude}</text>
+							<text class="latitude">纬度：${this.watermarkData.latitude === '' ? '正在获取中...' : this.watermarkData.latitude}</text>
 						</view>
-					</view>
+					</image>
 				</view>`
 			},
 			renderCanvas() {
@@ -200,18 +224,17 @@
 				this.style.container.height = realHeight
 				this.style.tempPhoto.width = realWidth
 				this.style.tempPhoto.height = realHeight
-			},
-			setWatermarkSize(height) {
-				console.log("设置水印尺寸")
-				const watermarkSize = uni.getStorageSync('watermarkSize')
-				const itemsSize = uni.getStorageSync('itemsSize')
 				
-				// 设置水印
-				this.style.photoWatermarkArea.width = watermarkSize.watermarkAreaWidth
-				this.style.photoWatermarkArea.height = watermarkSize.watermarkAreaHeight
+				// 配置水印
+				this.style.time.width = realWidth
+				this.style.location.width = realWidth
+				this.style.longitude.width = realWidth
+				this.style.latitude.width = realWidth
+				// this.style.time.width = Math.round(realWidth / 2)
+				// this.style.location.width = Math.round(realWidth / 2)
+				// this.style.longitude.width = Math.round(realWidth / 2)
+				// this.style.latitude.width = Math.round(realWidth / 2)
 				
-				// 设置内容区水印
-				this.style.content.width = 
 			}
 		}
 	}

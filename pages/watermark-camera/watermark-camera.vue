@@ -188,6 +188,11 @@
 						if (tempImagePath) {
 							// 计算水印相关大小
 							this.calculateWatermarkAreaSize()
+							
+							// 设置水印信息
+							uni.setStorageSync('watermarkData', this.watermarkData)
+							
+							// 页面跳转
 							uni.navigateTo({
 								url: `/pages/renderPhoto/renderPhoto?tempImagePath=${tempImagePath}`
 							})
@@ -312,10 +317,16 @@
 				})
 				
 				// 内容区块的宽度
-				const contentWidth = Math.round((((watermarkAreaWidth * pixelRatio) - 40) / pixelRatio))
+				const contentWidth = Math.round(((watermarkAreaWidth * pixelRatio) - 40) / pixelRatio)
+				
 				// 内容区块的高度
-				const contentHeight = watermarkAreaHeight
-				// 内容区块的padding值
+				const contentHeight = Math.round(((watermarkAreaHeight * pixelRatio) - 20) / pixelRatio)
+				
+				// 内容区块的 paddingLeft(Right)
+				const contentPaddingLeft = Math.round(20 / pixelRatio)
+				
+				// 内容区块的 paddingTop(Bottom)
+				const contentPaddingTop = Math.round(10 / pixelRatio)
 				
 				// 水印区块每一个元素的宽度都等于水印区块的宽度 - 左右缩进的宽度(共计40rpx)
 				// 每一个元素的宽度 = Math.round((((屏幕宽度 * dpr) - 左右各20rpx)/ 2)/dpr)
@@ -340,6 +351,7 @@
 						height: 100
 					}
 				}
+				
 				query.select(".item.time").boundingClientRect((rect) => {
 					itemsSize.time.height = rect.height
 				})
@@ -359,7 +371,7 @@
 						console.log(`${key}的宽的为${itemsSize[key].width}, 高度为${itemsSize[key].height}`)
 					}
 					uni.setStorageSync('watermarkSize', {watermarkAreaWidth, watermarkAreaHeight})
-					uni.setStorageSync('contentSize', {})
+					uni.setStorageSync('contentSize', {contentHeight, contentWidth, contentPaddingLeft, contentPaddingTop})
 					uni.setStorageSync('itemsSize', itemsSize)
 				})
 			}
